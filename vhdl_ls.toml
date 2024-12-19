@@ -1,0 +1,12 @@
+[libraries]
+
+lib.files = [
+"write_back.vhd",
+"mydefinitions.vhd",
+"memory_acc.vhd",
+"ir_fetch.vhd",
+"executeTest.vhd",
+"execute.vhd",
+"decodeTest.vhd",
+"decode.vhd",
+]
