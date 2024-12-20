@@ -18,7 +18,7 @@ BEGIN
 	fetching : PROCESS (clk) IS
 	BEGIN
 		IF rising_edge(clk) THEN
-			pc_out <= pc + 4;
+			pc_out <= pc + 1;
 		END IF;
 	END PROCESS fetching;
 END ARCHITECTURE fetch_arch;
