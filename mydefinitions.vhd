@@ -1,20 +1,19 @@
-PACKAGE mydefinitions IS
-    CONSTANT add : INTEGER := 0;
-    CONSTANT subt : INTEGER := 1;
-    CONSTANT neg : INTEGER := 2;
-    CONSTANT mul : INTEGER := 3;
-    CONSTANT div : INTEGER := 4;
-    CONSTANT modu : INTEGER := 5;
+package mydefinitions is
+    constant add : integer := 0;
+    constant subt : integer := 1;
+    constant neg : integer := 2;
+    constant mul : integer := 3;
+    constant div : integer := 4;
+    constant modu : integer := 5;
 
-    CONSTANT nicht : INTEGER := 6;
-    CONSTANT und : INTEGER := 7;
-    CONSTANT oder : INTEGER := 8;
-    CONSTANT beq : INTEGER := 9;
-    CONSTANT bneq : INTEGER := 10;
-    CONSTANT blt : INTEGER := 11;
-    CONSTANT jmp : INTEGER := 12;
-    CONSTANT ldw : INTEGER := 13;
-    CONSTANT stw : INTEGER := 14;
+    constant nicht : integer := 6;
+    constant und : integer := 7;
+    constant oder : integer := 8;
+    constant beq : integer := 9;
+    constant bneq : integer := 10;
+    constant blt : integer := 11;
+    constant jmp : integer := 12;
+    constant ldw : integer := 13;
+    constant stw : integer := 14;
 
-END PACKAGE mydefinitions;
-
+end package mydefinitions;

@@ -6,7 +6,7 @@ entity decodeTest is
 
 end entity decodeTest;
 
-architecture testbench of decodeTest is
+architecture decodeTestArch of decodeTest is
 
     component decode is
         port (
@@ -83,4 +83,4 @@ begin
     pc <= to_signed(1, 32);
     writeEn <= '0';
     a <= to_signed(2, 32);
-end architecture testbench;
+end architecture decodeTestArch;
