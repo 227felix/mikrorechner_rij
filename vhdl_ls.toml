@@ -5,6 +5,7 @@ lib.files = [
 "mydefinitions.vhd",
 "memory_acc.vhd",
 "fetchTest.vhd",
+"fetchDecodeTest.vhd",
 "fetch.vhd",
 "executeTest.vhd",
 "execute.vhd",

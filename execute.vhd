@@ -105,8 +105,8 @@ ENTITY execute IS
 		a_out : OUT signed (31 DOWNTO 0);
 		b_out : OUT signed (31 DOWNTO 0);
 
-		pc : IN signed (31 DOWNTO 0);
-		pc_out : OUT signed (31 DOWNTO 0);
+		pc : IN signed (4 DOWNTO 0);
+		pc_out : OUT signed (4 DOWNTO 0);
 
 		alu_out : OUT signed (31 DOWNTO 0);
 		br_flag_out : OUT STD_LOGIC;

@@ -38,8 +38,8 @@ ARCHITECTURE testbench OF executeTest IS
             a_out : OUT signed (31 DOWNTO 0);
             b_out : OUT signed (31 DOWNTO 0);
 
-            pc : IN signed (31 DOWNTO 0);
-            pc_out : OUT signed (31 DOWNTO 0);
+            pc : IN signed (4 DOWNTO 0);
+            pc_out : OUT signed (4 DOWNTO 0);
 
             alu_out : OUT signed (31 DOWNTO 0);
             br_flag_out : OUT STD_LOGIC;
@@ -63,7 +63,7 @@ ARCHITECTURE testbench OF executeTest IS
 
     SIGNAL a, b , a_out, b_out : signed (31 DOWNTO 0);
 
-    SIGNAL pc, pc_out : signed (31 DOWNTO 0);
+    SIGNAL pc, pc_out : signed (4 DOWNTO 0);
 
     SIGNAL alu_out : signed (31 DOWNTO 0);
     SIGNAL br_flag_out : STD_LOGIC;
