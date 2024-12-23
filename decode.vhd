@@ -33,8 +33,8 @@ ENTITY decode IS
     wb_addr : IN signed (4 DOWNTO 0);  -- weg glaub
     writeEn : IN STD_LOGIC; -- weg glaub
 
-    pc : IN signed (4 DOWNTO 0);
-    pc_out : OUT signed (4 DOWNTO 0)
+    pc : IN signed (15 DOWNTO 0);
+    pc_out : OUT signed (15 DOWNTO 0)
 
   );
 

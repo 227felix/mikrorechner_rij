@@ -12,25 +12,25 @@ architecture fetchTestArch of fetchTest is
     component fetch is
         port (
             clk : in std_logic;
-            pc : in signed(4 downto 0);
-            pc_out : out signed(4 downto 0)
+            pc : in signed(15 downto 0);
+            pc_out : out signed(15 downto 0)
         );
     end component fetch;
 
     signal clk : std_logic := '0';
-    signal pc : signed(4 downto 0) := to_signed(0, 5);
-    signal pc_out : signed(4 downto 0) := to_signed(0, 5);
+    signal pc : signed(15 downto 0) := to_signed(0, 16);
+    signal pc_out : signed(15 downto 0) := to_signed(0, 16);
 
-    signal iAddr : std_logic_vector(4 downto 0) := (others => '0');
-    signal iData : std_logic_vector(15 downto 0) := (others => '0');
+    signal iAddr : std_logic_vector(15 downto 0) := (others => '0');
+    signal iData : std_logic_vector(31 downto 0) := (others => '0');
     signal iFileIO : fileIoT := none;
 
 begin
 
     instrMemI : rom
     generic map(
-        addrWd => 5,
-        dataWd => 16,
+        addrWd => 16,
+        dataWd => 32,
         fileId => "instMem.dat"
     )
     port map(

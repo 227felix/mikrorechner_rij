@@ -7,8 +7,8 @@ USE work.mydefinitions.ALL;
 ENTITY fetch IS
 	PORT (
 		clk : IN STD_LOGIC;
-		pc : IN signed (4 DOWNTO 0);
-		pc_out : OUT signed (4 DOWNTO 0)
+		pc : IN signed (15 DOWNTO 0);
+		pc_out : OUT signed (15 DOWNTO 0)
 	);
 END ENTITY fetch;
 

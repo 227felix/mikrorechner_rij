@@ -12,8 +12,8 @@ architecture fetchDecodeTestArch of fetchDecodeTest is
     component fetch is
         port (
             clk : in std_logic;
-            pc : in signed(4 downto 0);
-            pc_out : out signed(4 downto 0)
+            pc : in signed(15 downto 0);
+            pc_out : out signed(15 downto 0)
         );
     end component fetch;
 
@@ -44,20 +44,20 @@ architecture fetchDecodeTestArch of fetchDecodeTest is
             wb_addr : in signed (4 downto 0);
             writeEn : in std_logic;
 
-            pc : in signed (4 downto 0);
-            pc_out : out signed (4 downto 0)
+            pc : in signed (15 downto 0);
+            pc_out : out signed (15 downto 0)
         );
     end component decode;
 
     signal clk : std_logic := '0';
-    signal pc_fetch : signed(4 downto 0) := to_signed(0, 5);
-    signal pc_dec : signed(4 downto 0) := to_signed(0, 5); -- Intermediate signal
+    signal pc_fetch : signed(15 downto 0) := to_signed(0, 16);
+    signal pc_dec : signed(15 downto 0) := to_signed(0, 16); -- Intermediate signal
 
-    signal pc_out_fetch : signed(4 downto 0) := to_signed(0, 5);
-    signal pc_out_dec : signed(4 downto 0) := to_signed(0, 5);
+    signal pc_out_fetch : signed(15 downto 0) := to_signed(0, 16);
+    signal pc_out_dec : signed(15 downto 0) := to_signed(0, 16);
 
-    signal iAddr : std_logic_vector(4 downto 0) := (others => '0');
-    signal iData : std_logic_vector(15 downto 0) := (others => '0');
+    signal iAddr : std_logic_vector(15 downto 0) := (others => '0');
+    signal iData : std_logic_vector(31 downto 0) := (others => '0');
     signal iFileIO : fileIoT := none;
 
     signal instr : signed (31 downto 0);
@@ -76,8 +76,8 @@ begin
 
     instrMemI : rom
     generic map(
-        addrWd => 5,
-        dataWd => 16,
+        addrWd => 16,
+        dataWd => 32,
         fileId => "instMem.dat"
     )
     port map(
@@ -120,7 +120,7 @@ begin
         if falling_edge(clk) then
             pc_fetch <= pc_out_dec; -- Feedback with synchronization
             pc_dec <= pc_out_fetch; -- Synchronize fetch output to decode input
-            instr <= resize(signed(iData), 32);
+            instr <= signed(iData);
         end if;
     end process;
 
@@ -128,7 +128,7 @@ begin
     begin
         iFileIO <= load, none after 5 ns;
 
-        for j in 1 to 100 loop
+        for j in 1 to 25 loop
             clk <= '0';
             wait for 5 ns;
             clk <= '1';
