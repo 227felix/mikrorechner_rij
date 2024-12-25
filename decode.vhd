@@ -61,7 +61,7 @@ BEGIN
       r4_out <= instr(10 DOWNTO 6);
       r5_out <= instr(5 DOWNTO 1);
 
-      pc_out <= pc;
+      pc_out <= pc + 1;
     END IF;
   END PROCESS decoding;
 

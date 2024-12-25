@@ -49,11 +49,12 @@ architecture fetchDecodeTestArch of fetchDecodeTest is
         );
     end component decode;
 
+    
+
     signal clk : std_logic := '0';
     signal pc_fetch : signed(15 downto 0) := to_signed(0, 16);
     signal pc_dec : signed(15 downto 0) := to_signed(0, 16); -- Intermediate signal
-
-    signal pc_out_fetch : signed(15 downto 0) := to_signed(0, 16);
+    
     signal pc_out_dec : signed(15 downto 0) := to_signed(0, 16);
 
     signal iAddr : std_logic_vector(15 downto 0) := (others => '0');
@@ -90,7 +91,7 @@ begin
     port map(
         clk => clk,
         pc => pc_fetch,
-        pc_out => pc_out_fetch
+        pc_out => pc_dec
     );
 
     decoding : decode
@@ -116,10 +117,23 @@ begin
 
     -- Connect fetch and decode PCs and instr signals
     process (clk)
+        variable all_x : boolean := true;
     begin
         if falling_edge(clk) then
-            pc_fetch <= pc_out_dec; -- Feedback with synchronization
-            pc_dec <= pc_out_fetch; -- Synchronize fetch output to decode input
+
+            all_x := true;
+            for i in pc_out_dec'range loop
+                if pc_out_dec(i) = 'X' then
+                    all_x := false;
+                    
+                end if;
+            end loop;
+
+            if not all_x then
+                pc_fetch <= (others => '0');
+            else
+                pc_fetch <= pc_out_dec;
+            end if;
             instr <= signed(iData);
         end if;
     end process;
@@ -134,7 +148,7 @@ begin
             clk <= '1';
             wait for 5 ns;
 
-            iAddr <= std_logic_vector(to_unsigned(0, iAddr'length - pc_out_dec'length)) & std_logic_vector(pc_out_dec);
+            iAddr <= std_logic_vector(to_unsigned(0, iAddr'length - pc_dec'length)) & std_logic_vector(pc_dec);
         end loop;
         wait;
     end process;
