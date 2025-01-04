@@ -4,58 +4,69 @@ use ieee.numeric_std.all;
 use ieee.std_logic_textio.all; -- Import std_logic_textio for image function
 use work.mempkg.all;
 
-ENTITY memory_accTest IS
+entity memory_accTest is
 
-END ENTITY memory_accTest;
+end entity memory_accTest;
 
-ARCHITECTURE memory_accTestArch OF memory_accTest IS
-    COMPONENT memory_acc IS
-        PORT (
-            clk : IN STD_LOGIC;
-            opC : IN INTEGER RANGE 0 TO 63;
-            opC_out : OUT INTEGER RANGE 0 TO 63;
-            r1 : IN signed(4 DOWNTO 0);
-            imm : IN signed(15 DOWNTO 0);
-            r1_out : OUT signed(4 DOWNTO 0);
-            imm_out : OUT signed(15 DOWNTO 0);
-            long_imm : IN signed(25 DOWNTO 0);
-            long_imm_out : OUT signed(25 DOWNTO 0);
-            a : IN signed(31 DOWNTO 0);
-            a_out : OUT signed(31 DOWNTO 0);
-            pc : IN signed(31 DOWNTO 0);
-            pc_out : OUT signed(31 DOWNTO 0);
-            alu : IN signed(31 DOWNTO 0);
-            alu_out : OUT signed(31 DOWNTO 0);
-            br_flag : IN STD_LOGIC;
-            data : OUT signed(31 DOWNTO 0);
-            wb_addr : OUT signed(4 DOWNTO 0);
-            writeEn : OUT STD_LOGIC
+architecture memory_accTestArch of memory_accTest is
+
+    component memory_acc is
+        port (
+            clk : in std_logic;
+            opC : in integer range 0 to 63;
+            opC_out : out integer range 0 to 63;
+            r1 : in signed(4 downto 0);
+            imm : in signed(15 downto 0);
+            r1_out : out signed(4 downto 0);
+            imm_out : out signed(15 downto 0);
+            long_imm : in signed(25 downto 0);
+            data : in signed(31 downto 0);
+            addr : in signed(15 downto 0);
+            writeEn : out std_logic;
+            data_out : out signed(31 downto 0);
+            pc : in signed(31 downto 0);
+            pc_out : out signed(31 downto 0);
+            br_flag : in std_logic
         );
-    END COMPONENT memory_acc;
+    end component memory_acc;
 
-    SIGNAL clk : STD_LOGIC;
-    SIGNAL opC : INTEGER RANGE 0 TO 63;
-    SIGNAL opC_out : INTEGER RANGE 0 TO 63;
-    SIGNAL r1 : signed(4 DOWNTO 0);
-    SIGNAL imm : signed(15 DOWNTO 0);
-    SIGNAL r1_out : signed(4 DOWNTO 0);
-    SIGNAL imm_out : signed(15 DOWNTO 0);
-    SIGNAL long_imm : signed(25 DOWNTO 0);
-    SIGNAL long_imm_out : signed(25 DOWNTO 0);
-    SIGNAL a : signed(31 DOWNTO 0);
-    SIGNAL a_out : signed(31 DOWNTO 0);
-    SIGNAL pc : signed(31 DOWNTO 0);
-    SIGNAL pc_out : signed(31 DOWNTO 0);
-    SIGNAL alu : signed(31 DOWNTO 0);
-    SIGNAL alu_out : signed(31 DOWNTO 0);
-    SIGNAL br_flag : STD_LOGIC;
-    SIGNAL data : signed(31 DOWNTO 0);
-    SIGNAL wb_addr : signed(4 DOWNTO 0);
-    SIGNAL writeEn : STD_LOGIC;
+    signal clk : std_logic;
+    signal opC : integer range 0 to 63;
+    signal opC_out : integer range 0 to 63;
+    signal r1 : signed(4 downto 0);
+    signal imm : signed(15 downto 0);
+    signal r1_out : signed(4 downto 0);
+    signal imm_out : signed(15 downto 0);
+    signal long_imm : signed(25 downto 0);
+    signal data : signed(31 downto 0);
+    signal addr : signed(15 downto 0);
+    signal writeEn : std_logic;
+    signal data_out : signed(31 downto 0);
+    signal pc : signed(31 downto 0);
+    signal pc_out : signed(31 downto 0);
+    signal br_flag : std_logic;
 
+    signal dataOut : std_logic_vector(31 downto 0);
+    signal iFileIO : fileIoT := none;
 
-BEGIN
-    mem_accesserI: memory_acc PORT MAP (
+begin
+
+    ramIO_inst : ramIO
+    generic map(
+        addrWd => 16,
+        dataWd => 32,
+        fileId => "ram.dat"
+    )
+    port map(
+        nWE => writeEn,
+        addr => std_logic_vector(addr),
+        dataI => std_logic_vector(data),
+        dataO => dataOut,
+        fileIO => iFileIO
+    );
+
+    memory_acc_inst : memory_acc
+    port map(
         clk => clk,
         opC => opC,
         opC_out => opC_out,
@@ -64,42 +75,26 @@ BEGIN
         r1_out => r1_out,
         imm_out => imm_out,
         long_imm => long_imm,
-        long_imm_out => long_imm_out,
-        a => a,
-        a_out => a_out,
+        data => data,
+        addr => addr,
+        writeEn => writeEn,
+        data_out => data_out,
         pc => pc,
         pc_out => pc_out,
-        alu => alu,
-        alu_out => alu_out,
-        br_flag => br_flag,
-        data => data,
-        wb_addr => wb_addr,
-        writeEn => writeEn
+        br_flag => br_flag
     );
 
-    ramIO_inst: ramIO
-     generic map(
-        addrWd => 16,
-        dataWd => 32,
-        fileId => "ram.dat"
-    )
-     port map(
-        nWE => nWE,
-        addr => addr,
-        dataI => dataI,
-        dataO => dataO,
-        fileIO => fileIO
-    );
+    process is
 
-    PROCESS IS
-    BEGIN
-        FOR j IN 1 TO 1000 LOOP
+    begin
+        iFileIO <= load, none after 5 ns;
+        for j in 1 to 1000 loop
             clk <= '0';
-            WAIT FOR 5 ns;
+            wait for 5 ns;
             clk <= '1';
-            WAIT FOR 5 ns;
-        END LOOP;
-        WAIT;
-    END PROCESS;
+            wait for 5 ns;
+        end loop;
+        wait;
+    end process;
 
-END ARCHITECTURE memory_accTestArch;
+end architecture memory_accTestArch;

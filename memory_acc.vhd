@@ -11,49 +11,46 @@ ENTITY memory_acc IS
 		opC : IN INTEGER RANGE 0 TO 63;
 		opC_out : OUT INTEGER RANGE 0 TO 63;
 
-		r1 : IN signed (4 DOWNTO 0);
-		imm : IN signed (15 DOWNTO 0);
-		r1_out : OUT signed (4 DOWNTO 0);
+		r1 : IN signed (4 DOWNTO 0); -- durchgereicht
+		imm : IN signed (15 DOWNTO 0); 
+		r1_out : OUT signed (4 DOWNTO 0); -- durchgereicht
 		imm_out : OUT signed (15 DOWNTO 0);
 
-		long_imm : IN signed (25 DOWNTO 0);
-		long_imm_out : OUT signed (25 DOWNTO 0);
+		long_imm : IN signed (25 DOWNTO 0); -- für jmp
 
+		data : IN signed (31 DOWNTO 0); -- vorher a 
+		addr : IN signed (15 DOWNTO 0); -- vorher b
+		writeEn : OUT STD_LOGIC; -- Für den RAM
 
-		a : IN signed (31 DOWNTO 0);
-
-		a_out : OUT signed (31 DOWNTO 0);
+		data_out : OUT signed (31 DOWNTO 0); --vorher a_out
 
 		pc : IN signed (31 DOWNTO 0);
 		pc_out : OUT signed (31 DOWNTO 0);
 
-		alu : IN signed (31 DOWNTO 0);
-		alu_out : OUT signed (31 DOWNTO 0);
-		br_flag : IN STD_LOGIC;
+		br_flag : IN STD_LOGIC
 
-		data : OUT signed (31 DOWNTO 0);
-		wb_addr : OUT signed (4 DOWNTO 0);
-		writeEn : OUT STD_LOGIC -- Warum mnicht erst im write_back?
 	);
 END ENTITY memory_acc;
 ARCHITECTURE memory_acc_arch OF memory_acc IS
 BEGIN
-	PROCESS (opC, br_flag, pc, imm)
+	PROCESS (clk)
 	BEGIN
-		writeEn <= '-';
-		CASE opC IS
-			WHEN ldw =>
-				writeEn <= '1';
-				data <= r1;
-			WHEN stw =>
-			WHEN jmp =>
-				pc_out <= long_imm;
-			WHEN beq =>
-				IF br_flag = '1' THEN
-					pc_out <= pc + imm;
-				END IF;
-			WHEN OTHERS =>
-				NULL;
-		END CASE;
+
+		IF rising_edge(clk) THEN
+			writeEn <= '-';
+			CASE opC IS
+				WHEN ldw =>
+					writeEn <= '1';
+				WHEN stw =>
+				WHEN jmp =>
+					pc_out <= resize(long_imm, 32);
+				WHEN beq =>
+					IF br_flag = '1' THEN
+						pc_out <= pc + imm;
+					END IF;
+				WHEN OTHERS =>
+					NULL;
+			END CASE;
+		END IF;
 	END PROCESS;
 END ARCHITECTURE memory_acc_arch;

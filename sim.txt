@@ -1,15 +1,15 @@
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/mydefinitions.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/memorySim/memPkg.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/memorySim/rom.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/fetch.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/fetchTest.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/memPkg.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/rom.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys fetch.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys fetchTest.vhd
 ghdl -e --std=08 --workdir=build -fsynopsys fetchTest
 ghdl -r --std=08 --workdir=build -fsynopsys fetchTest --vcd=build/fetch.vcd
 gtkwave build/fetch.vcd
 
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/mydefinitions.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/decode.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/decodeTest.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys decode.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys decodeTest.vhd
 ghdl -e --std=08 --workdir=build -fsynopsys decodeTest
 ghdl -r --std=08 --workdir=build -fsynopsys decodeTest --vcd=build/decode.vcd
 gtkwave build/decode.vcd
@@ -17,9 +17,9 @@ gtkwave build/decode.vcd
 
 decode sim mit regbank:
 
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/mydefinitions.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/decode.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/decodeTest.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys decode.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys decodeTest.vhd
 ghdl -e --std=08 --workdir=build -fsynopsys decodeTest
 ghdl -r --std=08 --workdir=build -fsynopsys decodeTest --wave=build/decode.ghw
 gtkwave build/decode.ghw
@@ -27,24 +27,24 @@ gtkwave build/decode.ghw
 
 
 
-ghdl -a ~/Documents/rust/mikrorechner_rij/mydefinitions.vhd
-ghdl -a ~/Documents/rust/mikrorechner_rij/execute.vhd
-ghdl -a ~/Documents/rust/mikrorechner_rij/executeTest.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys execute.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys executeTest.vhd
 ghdl -e executeTest
 ghdl -r executeTest --vcd=waveform.vcd
 gtkwave waveform.vcd
 
 
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/mydefinitions.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/memorySim/memPkg.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/memorySim/rom.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/fetch.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/fetchTest.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/decode.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/decodeTest.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/execute.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/executeTest.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys ~/Documents/rust/mikrorechner_rij/fetchDecodeTest.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/memPkg.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/rom.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys fetch.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys fetchTest.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys decode.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys decodeTest.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys execute.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys executeTest.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys fetchDecodeTest.vhd
 
 ghdl -e --std=08 --workdir=build -fsynopsys fetchDecodeTest
 ghdl -r --std=08 --workdir=build -fsynopsys fetchDecodeTest --vcd=build/waveform.vcd
@@ -53,3 +53,14 @@ gtkwave build/waveform.vcd
 
 
 
+
+
+
+ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/memPkg.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/ramIO.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memory_acc.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memory_accTest.vhd
+ghdl -e --std=08 --workdir=build -fsynopsys memory_accTest
+ghdl -r --std=08 --workdir=build -fsynopsys memory_accTest --vcd=build/memory_acc.vcd
+gtkwave build/memory_acc.vcd
