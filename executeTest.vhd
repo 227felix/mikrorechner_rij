@@ -38,12 +38,12 @@ ARCHITECTURE testbench OF executeTest IS
             a_out : OUT signed (31 DOWNTO 0);
             b_out : OUT signed (31 DOWNTO 0);
 
-            pc : IN signed (4 DOWNTO 0);
-            pc_out : OUT signed (4 DOWNTO 0);
+            pc : IN signed (15 DOWNTO 0);
+            pc_out : OUT signed (15 DOWNTO 0);
 
             alu_out : OUT signed (31 DOWNTO 0);
             br_flag_out : OUT STD_LOGIC;
-            
+
             wb_addr : OUT signed (4 DOWNTO 0)
 
         );
@@ -61,15 +61,14 @@ ARCHITECTURE testbench OF executeTest IS
 
     SIGNAL r3, r4, r5, r3_out, r4_out, r5_out : signed (4 DOWNTO 0);
 
-    SIGNAL a, b , a_out, b_out : signed (31 DOWNTO 0);
+    SIGNAL a, b, a_out, b_out : signed (31 DOWNTO 0);
 
-    SIGNAL pc, pc_out : signed (4 DOWNTO 0);
+    SIGNAL pc, pc_out : signed (15 DOWNTO 0);
 
     SIGNAL alu_out : signed (31 DOWNTO 0);
     SIGNAL br_flag_out : STD_LOGIC;
 
     SIGNAL wb_addr : signed (4 DOWNTO 0);
-
 
 BEGIN
     executeI : execute PORT MAP(clk, opC, opC_out, r1, r2, imm, r1_out, r2_out, imm_out, long_imm, long_imm_out, r3, r4, r5, r3_out, r4_out, r5_out, a, b, a_out, b_out, pc, pc_out, alu_out, br_flag_out, wb_addr);
@@ -89,7 +88,7 @@ BEGIN
     PROCESS IS
     BEGIN
         FOR j IN 0 TO 14 LOOP
-                opC <= j;
+            opC <= j;
             WAIT FOR 20 ns;
         END LOOP;
         WAIT;

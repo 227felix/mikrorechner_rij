@@ -3,6 +3,7 @@
 lib.files = [
 "write_back.vhd",
 "mydefinitions.vhd",
+"memory_accTest.vhd",
 "memory_acc.vhd",
 "fetchTest.vhd",
 "fetchDecodeTest.vhd",

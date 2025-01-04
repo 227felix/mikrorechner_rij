@@ -37,8 +37,8 @@ architecture decodeTestArch of decodeTest is
             wb_addr : in signed (4 downto 0);
             writeEn : in std_logic;
 
-            pc : in signed (4 downto 0);
-            pc_out : out signed (4 downto 0)
+            pc : in signed (15 downto 0);
+            pc_out : out signed (15 downto 0)
 
         );
 
@@ -63,7 +63,7 @@ architecture decodeTestArch of decodeTest is
     signal wb_addr : signed (4 downto 0);
     signal writeEn : std_logic;
 
-    signal pc, pc_out : signed (4 downto 0);
+    signal pc, pc_out : signed (15 downto 0);
 
 begin
     decoderI : decode port map(clk, instr, opC, r1_out, r2_out, imm, long_imm, r3_out, r4_out, r5_out, a, b, wb, wb_addr, writeEn, pc, pc_out);
@@ -80,7 +80,7 @@ begin
     wb <= to_signed(25, 32), to_signed(-1, 32) after 32 ns;
     wb_addr <= to_signed(3, 5);
     instr <= to_signed(1364028010, 32);
-    pc <= to_signed(1, 5);
+    pc <= to_signed(1, 16);
     writeEn <= '0';
     a <= to_signed(2, 32);
 end architecture decodeTestArch;
