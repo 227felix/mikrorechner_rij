@@ -30,8 +30,8 @@ gtkwave build/decode.ghw
 ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys execute.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys executeTest.vhd
-ghdl -e executeTest
-ghdl -r executeTest --vcd=waveform.vcd
+ghdl -e --std=08 --workdir=build -fsynopsys executeTest
+ghdl -r --std=08 --workdir=build -fsynopsys executeTest --vcd=waveform.vcd
 gtkwave waveform.vcd
 
 
@@ -44,12 +44,12 @@ ghdl -a --std=08 --workdir=build -fsynopsys decode.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys decodeTest.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys execute.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys executeTest.vhd
-ghdl -a --std=08 --workdir=build -fsynopsys fetchDecodeTest.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys processorTest.vhd
 
-ghdl -e --std=08 --workdir=build -fsynopsys fetchDecodeTest
-ghdl -r --std=08 --workdir=build -fsynopsys fetchDecodeTest --vcd=build/waveform.vcd
+ghdl -e --std=08 --workdir=build -fsynopsys processorTest
+ghdl -r --std=08 --workdir=build -fsynopsys processorTest --vcd=build/processor.vcd
 
-gtkwave build/waveform.vcd
+gtkwave build/processor.vcd
 
 
 
@@ -64,3 +64,21 @@ ghdl -a --std=08 --workdir=build -fsynopsys memory_accTest.vhd
 ghdl -e --std=08 --workdir=build -fsynopsys memory_accTest
 ghdl -r --std=08 --workdir=build -fsynopsys memory_accTest --vcd=build/memory_acc.vcd
 gtkwave build/memory_acc.vcd
+
+
+// fetch decode
+ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/memPkg.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/rom.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys fetch.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys decode.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys fetchDecode.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys fetchDecodeTest.vhd
+
+ghdl -e --std=08 --workdir=build -fsynopsys fetchDecodeTest
+ghdl -r --std=08 --workdir=build -fsynopsys fetchDecodeTest --vcd=build/fetchDecodeTest
+gtkwave build/fetchDecodeTest.vcd
+
+
+
+

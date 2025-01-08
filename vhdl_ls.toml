@@ -2,6 +2,8 @@
 
 lib.files = [
 "write_back.vhd",
+"processorTest.vhd",
+"processor.vhd",
 "mydefinitions.vhd",
 "memory_accTest.vhd",
 "memory_acc.vhd",

@@ -95,9 +95,6 @@ ENTITY execute IS
 		r3 : IN signed (4 DOWNTO 0);
 		r4 : IN signed (4 DOWNTO 0);
 		r5 : IN signed (4 DOWNTO 0);
-		r3_out : OUT signed (4 DOWNTO 0);
-		r4_out : OUT signed (4 DOWNTO 0);
-		r5_out : OUT signed (4 DOWNTO 0);
 
 		a : IN signed (31 DOWNTO 0);
 		b : IN signed (31 DOWNTO 0);
@@ -108,10 +105,8 @@ ENTITY execute IS
 		pc : IN signed (15 DOWNTO 0);
 		pc_out : OUT signed (15 DOWNTO 0);
 
-		alu_out : OUT signed (31 DOWNTO 0);
-		br_flag_out : OUT STD_LOGIC;
+		br_flag_out : OUT STD_LOGIC
 
-		wb_addr : OUT signed (4 DOWNTO 0)
 
 	);
 END ENTITY execute;
@@ -143,17 +138,17 @@ BEGIN
 			imm_out <= imm;
 
 			long_imm_out <= long_imm;
-			r3_out <= r3;
-			r4_out <= r4;
-			r5_out <= r5;
 
 			a_out <= a;
-			b_out <= b;
 
 			pc_out <= pc;
 
-			alu_out <= alu_signal;
 			br_flag_out <= br_signal;
+		IF opC = add OR opC = subt OR opC = neg OR opC = mul OR opC = div OR opC = modu OR opC = nicht OR opC = und OR opC = oder THEN
+			b_out <= alu_signal;
+		ELSE
+			b_out <= b;
+		end if;
 
 		END IF;
 	END PROCESS assign;
