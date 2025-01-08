@@ -58,7 +58,7 @@ architecture processorArch of processor is
 
     component execute is
         port (
-            clk : in std_logic
+            clk : in std_logic;
             opC : in integer range 0 to 63;
             opC_out : out integer range 0 to 63;
             r1 : in signed(4 downto 0);
@@ -82,6 +82,26 @@ architecture processorArch of processor is
         );
     end component execute;
 
+    component memory_acc is
+        port (
+            clk : in std_logic;
+            opC : in integer range 0 to 63;
+            opC_out : out integer range 0 to 63;
+            r1 : in signed(4 downto 0);
+            imm : in signed(15 downto 0);
+            r1_out : out signed(4 downto 0);
+            imm_out : out signed(15 downto 0);
+            long_imm : in signed(25 downto 0);
+            data : in signed(31 downto 0);
+            addr : in signed(15 downto 0);
+            nwe : out std_logic;
+            data_out : out signed(31 downto 0);
+            pc : in signed(31 downto 0);
+            pc_out : out signed(31 downto 0);
+            br_flag : in std_logic
+        );
+    end component memory_acc;
+
     signal fetch_pc_out : signed(15 downto 0);
 
     signal rom_instr_out : signed(31 downto 0);
@@ -102,11 +122,17 @@ architecture processorArch of processor is
     signal execute_r2_out : signed(4 downto 0);
     signal execute_imm_out : signed(15 downto 0);
     signal execute_long_imm_out : signed(25 downto 0);
-    
+    signal execute_a_out : signed(31 downto 0);
+    signal execute_b_out : signed(31 downto 0);
+    signal execute_pc_out : signed(15 downto 0);
+    signal execute_br_flag_out : std_logic;
 
-
-
-
+    signal memacc_opC_out : integer range 0 to 63;
+    signal memacc_r1_out : signed(4 downto 0);
+    signal memacc_imm_out : signed(15 downto 0);
+    signal memacc_nwe : std_logic;
+    signal memacc_data_out : signed(31 downto 0);
+    signal memacc_pc_out : signed(31 downto 0);
 
 
 begin
@@ -115,7 +141,7 @@ begin
     port map(
         clk => clk,
         pc => pc,
-        pc_out => pc_internal
+        pc_out => fetch_pc_out
     );
 
     decoding : decode
@@ -140,7 +166,7 @@ begin
     );
 
     executing : execute
-    port map (
+    port map(
         clk => clk,
         opC => decode_opC_out,
         opC_out => execute_opC_out,
@@ -161,9 +187,26 @@ begin
         b_out => execute_b_out,
         pc => decode_pc_out,
         pc_out => execute_pc_out,
-        br_flag_out => execute_br_flag_out,
-
+        br_flag_out => execute_br_flag_out
     );
 
+    memory_accessing : memory_acc
+    port map(
+        clk => clk,
+        opC => execute_opC_out,
+        opC_out => memacc_opC_out,
+        r1 => execute_r1_out,
+        imm => execute_imm_out,
+        r1_out => memacc_r1_out,
+        imm_out => memacc_imm_out,
+        long_imm => execute_long_imm_out,
+        data => execute_a_out,
+        addr => execute_b_out(15 downto 0), -- b wird als Adresse verwendet; aufgrund des Speichermodells, nur die unteren 16 Bit
+        nwe => memacc_nwe,
+        data_out => memacc_data_out,
+        pc => execute_pc_out,
+        pc_out => memacc_pc_out,
+        br_flag => execute_br_flag_out
+    );
 
 end architecture processorArch;

@@ -69,9 +69,6 @@ ARCHITECTURE processorTestArch OF processorTest IS
             r3 : IN signed (4 DOWNTO 0);
             r4 : IN signed (4 DOWNTO 0);
             r5 : IN signed (4 DOWNTO 0);
-            r3_out : OUT signed (4 DOWNTO 0);
-            r4_out : OUT signed (4 DOWNTO 0);
-            r5_out : OUT signed (4 DOWNTO 0);
 
             a : IN signed (31 DOWNTO 0);
             b : IN signed (31 DOWNTO 0);
@@ -82,10 +79,8 @@ ARCHITECTURE processorTestArch OF processorTest IS
             pc : IN signed (15 DOWNTO 0);
             pc_out : OUT signed (15 DOWNTO 0);
 
-            alu_out : OUT signed (31 DOWNTO 0);
-            br_flag_out : OUT STD_LOGIC;
+            br_flag_out : OUT STD_LOGIC
 
-            wb_addr : OUT signed (4 DOWNTO 0)
 
         );
     END COMPONENT execute;
@@ -171,7 +166,7 @@ BEGIN
         pc_out => pc_out_dec
     );
 
-    executeI : execute PORT MAP(clk, opC, opC_ex_out, r1_out, r2_out, imm, r1_out_ex, r2_out_ex, imm_out_ex, long_imm, long_imm_out_ex, r3_out, r4_out, r5_out, r3_out_ex, r4_out_ex, r5_out_ex, a, b, a_out_ex, b_out_ex, pc_out_dec, pc_out_ex, alu_out_ex, br_flag_out_ex, wb_addr_out_ex);
+    executeI : execute PORT MAP(clk, opC, opC_ex_out, r1_out, r2_out, imm, r1_out_ex, r2_out_ex, imm_out_ex, long_imm, long_imm_out_ex, r3_out, r4_out, r5_out, a, b, a_out_ex, b_out_ex, pc_out_dec, pc_out_ex, br_flag_out_ex);
     -- Connect fetch and decode PCs and instr signals
     PROCESS (clk)
         VARIABLE all_x : BOOLEAN := true;

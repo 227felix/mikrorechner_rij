@@ -20,7 +20,7 @@ ENTITY memory_acc IS
 
 		data : IN signed (31 DOWNTO 0); -- vorher a 
 		addr : IN signed (15 DOWNTO 0); -- vorher b
-		writeEn : OUT STD_LOGIC; -- Für den RAM
+		nwe : OUT STD_LOGIC; -- Für den RAM
 
 		data_out : OUT signed (31 DOWNTO 0); --vorher a_out
 
@@ -37,11 +37,12 @@ BEGIN
 	BEGIN
 
 		IF rising_edge(clk) THEN
-			writeEn <= '-';
+			nwe <= '-';
 			CASE opC IS
 				WHEN ldw =>
-					writeEn <= '1';
+					nwe <= '1'; -- wenn aus dem RAM gelesen wird muss nwe auf 1 gesetzt werden
 				WHEN stw =>
+					nwe <= '0'; -- wenn in den RAM geschrieben wird muss nwe auf 0 gesetzt werden
 				WHEN jmp =>
 					pc_out <= resize(long_imm, 32);
 				WHEN beq =>

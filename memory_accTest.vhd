@@ -22,7 +22,7 @@ architecture memory_accTestArch of memory_accTest is
             long_imm : in signed(25 downto 0);
             data : in signed(31 downto 0);
             addr : in signed(15 downto 0);
-            writeEn : out std_logic;
+            nwe : out std_logic;
             data_out : out signed(31 downto 0);
             pc : in signed(31 downto 0);
             pc_out : out signed(31 downto 0);
@@ -40,13 +40,13 @@ architecture memory_accTestArch of memory_accTest is
     signal long_imm : signed(25 downto 0);
     signal data : signed(31 downto 0);
     signal addr : signed(15 downto 0);
-    signal writeEn : std_logic;
+    signal nwe : std_logic;
     signal data_out : signed(31 downto 0);
     signal pc : signed(31 downto 0);
     signal pc_out : signed(31 downto 0);
     signal br_flag : std_logic;
 
-    signal dataOut : std_logic_vector(31 downto 0);
+    signal ram_data_out : std_logic_vector(31 downto 0);
     signal iFileIO : fileIoT := none;
 
 begin
@@ -58,10 +58,10 @@ begin
         fileId => "ram.dat"
     )
     port map(
-        nWE => writeEn,
+        nWE => nwe,
         addr => std_logic_vector(addr),
         dataI => std_logic_vector(data),
-        dataO => dataOut,
+        dataO => ram_data_out,
         fileIO => iFileIO
     );
 
@@ -77,24 +77,30 @@ begin
         long_imm => long_imm,
         data => data,
         addr => addr,
-        writeEn => writeEn,
+        nwe => nwe,
         data_out => data_out,
         pc => pc,
         pc_out => pc_out,
         br_flag => br_flag
     );
 
-    process is
 
+    addr <= to_signed(0, 16), to_signed(1, 16) after 20 ns;
+    data <= to_signed(100, 32), to_signed(200, 32) after 10 ns;
+    nwe <= '0', '1' after 10 ns; -- not working 
+
+    process is
     begin
         iFileIO <= load, none after 5 ns;
         for j in 1 to 1000 loop
             clk <= '0';
             wait for 5 ns;
             clk <= '1';
+            data_out <= signed(ram_data_out);
             wait for 5 ns;
         end loop;
         wait;
     end process;
+
 
 end architecture memory_accTestArch;

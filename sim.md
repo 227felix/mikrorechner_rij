@@ -1,3 +1,5 @@
+
+# Fetch + ROM
 ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys memorySim/memPkg.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys memorySim/rom.vhd
@@ -7,6 +9,9 @@ ghdl -e --std=08 --workdir=build -fsynopsys fetchTest
 ghdl -r --std=08 --workdir=build -fsynopsys fetchTest --vcd=build/fetch.vcd
 gtkwave build/fetch.vcd
 
+
+# Decode
+## Regbank nicht sichtbar
 ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys decode.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys decodeTest.vhd
@@ -15,7 +20,7 @@ ghdl -r --std=08 --workdir=build -fsynopsys decodeTest --vcd=build/decode.vcd
 gtkwave build/decode.vcd
 
 
-decode sim mit regbank:
+## Reagbank sichtbar
 
 ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys decode.vhd
@@ -25,8 +30,7 @@ ghdl -r --std=08 --workdir=build -fsynopsys decodeTest --wave=build/decode.ghw
 gtkwave build/decode.ghw
 
 
-
-
+# Execute
 ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys execute.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys executeTest.vhd
@@ -34,7 +38,7 @@ ghdl -e --std=08 --workdir=build -fsynopsys executeTest
 ghdl -r --std=08 --workdir=build -fsynopsys executeTest --vcd=waveform.vcd
 gtkwave waveform.vcd
 
-
+# Combined Test (Fetch + Decode + Execute)
 ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys memorySim/memPkg.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys memorySim/rom.vhd
