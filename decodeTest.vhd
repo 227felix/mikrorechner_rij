@@ -44,26 +44,26 @@ architecture decodeTestArch of decodeTest is
 
     end component decode;
 
-    signal clk : std_logic;
+    signal clk : std_logic := '0';
 
-    signal instr : signed (31 downto 0);
+    signal instr : signed (31 downto 0) := (others => '0');
 
-    signal opC : integer range 0 to 63;
+    signal opC : integer range 0 to 63 := 0;
 
-    signal r1_out, r2_out : signed (4 downto 0);
-    signal imm : signed (15 downto 0);
+    signal r1_out, r2_out : signed (4 downto 0) := (others => '0');
+    signal imm : signed (15 downto 0) := (others => '0');
 
-    signal long_imm : signed (25 downto 0);
+    signal long_imm : signed (25 downto 0) := (others => '0');
 
-    signal r3_out, r4_out, r5_out : signed (4 downto 0);
+    signal r3_out, r4_out, r5_out : signed (4 downto 0) := (others => '0');
 
-    signal a, b : signed (31 downto 0);
+    signal a, b : signed (31 downto 0) := (others => '0');
 
-    signal wb : signed (31 downto 0);
-    signal wb_addr : signed (4 downto 0);
-    signal writeEn : std_logic;
+    signal wb : signed (31 downto 0) := (others => '0');
+    signal wb_addr : signed (4 downto 0) := (others => '0');
+    signal writeEn : std_logic := '0';
 
-    signal pc, pc_out : signed (15 downto 0);
+    signal pc, pc_out : signed (15 downto 0) := (others => '0');
 
 begin
     decoderI : decode port map(clk, instr, opC, r1_out, r2_out, imm, long_imm, r3_out, r4_out, r5_out, a, b, wb, wb_addr, writeEn, pc, pc_out);
@@ -82,5 +82,4 @@ begin
     instr <= to_signed(1364028010, 32);
     pc <= to_signed(1, 16);
     writeEn <= '0';
-    a <= to_signed(2, 32);
 end architecture decodeTestArch;

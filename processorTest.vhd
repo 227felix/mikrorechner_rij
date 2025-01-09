@@ -1,154 +1,153 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
-USE ieee.numeric_std.ALL;
-USE ieee.std_logic_textio.ALL; -- Import std_logic_textio for image function
-USE work.mempkg.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_textio.all; -- Import std_logic_textio for image function
+use work.mempkg.all;
 
-ENTITY processorTest IS
-END ENTITY processorTest;
+entity processorTest is
+end entity processorTest;
 
-ARCHITECTURE processorTestArch OF processorTest IS
+architecture processorTestArch of processorTest is
 
-    COMPONENT fetch IS
-        PORT (
-            clk : IN STD_LOGIC;
-            pc : IN signed(15 DOWNTO 0);
-            pc_out : OUT signed(15 DOWNTO 0)
+    component fetch is
+        port (
+            clk : in std_logic;
+            pc : in signed(15 downto 0);
+            pc_out : out signed(15 downto 0)
         );
-    END COMPONENT fetch;
+    end component fetch;
 
-    COMPONENT decode IS
-        PORT (
-            clk : IN STD_LOGIC;
-            instr : IN signed (31 DOWNTO 0);
-            opC : OUT INTEGER RANGE 0 TO 63;
+    component decode is
+        port (
+            clk : in std_logic;
+            instr : in signed (31 downto 0);
+            opC : out integer range 0 to 63;
 
             -- i-format
-            r1_out : BUFFER signed (4 DOWNTO 0);
-            r2_out : BUFFER signed (4 DOWNTO 0);
-            imm : OUT signed (15 DOWNTO 0);
+            r1_out : buffer signed (4 downto 0);
+            r2_out : buffer signed (4 downto 0);
+            imm : out signed (15 downto 0);
 
             -- j-format
-            long_imm : OUT signed (25 DOWNTO 0);
+            long_imm : out signed (25 downto 0);
 
             -- r-format
-            r3_out : OUT signed (4 DOWNTO 0);
-            r4_out : OUT signed (4 DOWNTO 0);
-            r5_out : OUT signed (4 DOWNTO 0);
+            r3_out : out signed (4 downto 0);
+            r4_out : out signed (4 downto 0);
+            r5_out : out signed (4 downto 0);
 
             -- values from register file
-            a : OUT signed (31 DOWNTO 0);
-            b : OUT signed (31 DOWNTO 0);
+            a : out signed (31 downto 0);
+            b : out signed (31 downto 0);
 
-            wb : IN signed (31 DOWNTO 0);
-            wb_addr : IN signed (4 DOWNTO 0);
-            writeEn : IN STD_LOGIC;
+            wb : in signed (31 downto 0);
+            wb_addr : in signed (4 downto 0);
+            writeEn : in std_logic;
 
-            pc : IN signed (15 DOWNTO 0);
-            pc_out : OUT signed (15 DOWNTO 0)
+            pc : in signed (15 downto 0);
+            pc_out : out signed (15 downto 0)
         );
-    END COMPONENT decode;
+    end component decode;
 
-    COMPONENT execute IS
-        PORT (
-            clk : IN STD_LOGIC;
+    component execute is
+        port (
+            clk : in std_logic;
 
-            opC : IN INTEGER RANGE 0 TO 63;
-            opC_out : OUT INTEGER RANGE 0 TO 63;
+            opC : in integer range 0 to 63;
+            opC_out : out integer range 0 to 63;
 
-            r1 : IN signed (4 DOWNTO 0);
-            r2 : IN signed (4 DOWNTO 0);
-            imm : IN signed (15 DOWNTO 0);
-            r1_out : OUT signed (4 DOWNTO 0);
-            r2_out : OUT signed (4 DOWNTO 0);
-            imm_out : OUT signed (15 DOWNTO 0);
+            r1 : in signed (4 downto 0);
+            r2 : in signed (4 downto 0);
+            imm : in signed (15 downto 0);
+            r1_out : out signed (4 downto 0);
+            r2_out : out signed (4 downto 0);
+            imm_out : out signed (15 downto 0);
 
-            long_imm : IN signed (25 DOWNTO 0);
-            long_imm_out : OUT signed (25 DOWNTO 0);
+            long_imm : in signed (25 downto 0);
+            long_imm_out : out signed (25 downto 0);
 
-            r3 : IN signed (4 DOWNTO 0);
-            r4 : IN signed (4 DOWNTO 0);
-            r5 : IN signed (4 DOWNTO 0);
+            r3 : in signed (4 downto 0);
+            r4 : in signed (4 downto 0);
+            r5 : in signed (4 downto 0);
 
-            a : IN signed (31 DOWNTO 0);
-            b : IN signed (31 DOWNTO 0);
+            a : in signed (31 downto 0);
+            b : in signed (31 downto 0);
 
-            a_out : OUT signed (31 DOWNTO 0);
-            b_out : OUT signed (31 DOWNTO 0);
+            a_out : out signed (31 downto 0);
+            b_out : out signed (31 downto 0);
 
-            pc : IN signed (15 DOWNTO 0);
-            pc_out : OUT signed (15 DOWNTO 0);
+            pc : in signed (15 downto 0);
+            pc_out : out signed (15 downto 0);
 
-            br_flag_out : OUT STD_LOGIC
-
+            br_flag_out : out std_logic
 
         );
-    END COMPONENT execute;
+    end component execute;
 
-    SIGNAL clk : STD_LOGIC := '0';
-    SIGNAL pc_fetch : signed(15 DOWNTO 0) := to_signed(0, 16);
-    SIGNAL pc_dec : signed(15 DOWNTO 0) := to_signed(0, 16); -- Intermediate signal
+    signal clk : std_logic := '0';
+    signal pc_fetch : signed(15 downto 0) := to_signed(0, 16);
+    signal pc_dec : signed(15 downto 0) := to_signed(0, 16); -- Intermediate signal
 
-    SIGNAL pc_out_dec : signed(15 DOWNTO 0) := to_signed(0, 16);
+    signal pc_out_dec : signed(15 downto 0) := to_signed(0, 16);
 
-    SIGNAL iAddr : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL iData : STD_LOGIC_VECTOR(31 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL iFileIO : fileIoT := none;
+    signal iAddr : std_logic_vector(15 downto 0) := (others => '0');
+    signal iData : std_logic_vector(31 downto 0) := (others => '0');
+    signal iFileIO : fileIoT := none;
 
-    SIGNAL instr : signed (31 DOWNTO 0);
+    signal instr : signed (31 downto 0);
 
-    SIGNAL opC : INTEGER RANGE 0 TO 63;
-    SIGNAL r1_out, r2_out : signed (4 DOWNTO 0);
-    SIGNAL imm : signed (15 DOWNTO 0);
-    SIGNAL long_imm : signed (25 DOWNTO 0);
-    SIGNAL r3_out, r4_out, r5_out : signed (4 DOWNTO 0);
-    SIGNAL a, b : signed (31 DOWNTO 0);
-    SIGNAL wb : signed (31 DOWNTO 0) := to_signed(0, 32);
-    SIGNAL wb_addr : signed (4 DOWNTO 0) := to_signed(0, 5);
-    SIGNAL writeEn : STD_LOGIC := '0';
-    SIGNAL opC_ex_out : INTEGER RANGE 0 TO 63;
+    signal opC : integer range 0 to 63;
+    signal r1_out, r2_out : signed (4 downto 0);
+    signal imm : signed (15 downto 0);
+    signal long_imm : signed (25 downto 0);
+    signal r3_out, r4_out, r5_out : signed (4 downto 0);
+    signal a, b : signed (31 downto 0);
+    signal wb : signed (31 downto 0) := to_signed(0, 32);
+    signal wb_addr : signed (4 downto 0) := to_signed(0, 5);
+    signal writeEn : std_logic := '0';
+    signal opC_ex_out : integer range 0 to 63;
 
-    SIGNAL r1_out_ex, r2_out_ex : signed (4 DOWNTO 0);
-    SIGNAL imm_out_ex : signed (15 DOWNTO 0);
+    signal r1_out_ex, r2_out_ex : signed (4 downto 0);
+    signal imm_out_ex : signed (15 downto 0);
 
-    SIGNAL long_imm_out_ex : signed (25 DOWNTO 0);
+    signal long_imm_out_ex : signed (25 downto 0);
 
-    SIGNAL r3_out_ex, r4_out_ex, r5_out_ex : signed (4 DOWNTO 0);
+    signal r3_out_ex, r4_out_ex, r5_out_ex : signed (4 downto 0);
 
-    SIGNAL a_out_ex, b_out_ex : signed (31 DOWNTO 0);
+    signal a_out_ex, b_out_ex : signed (31 downto 0);
 
-    SIGNAL pc_out_ex : signed (15 DOWNTO 0);
+    signal pc_out_ex : signed (15 downto 0);
 
-    SIGNAL alu_out_ex : signed (31 DOWNTO 0);
-    SIGNAL br_flag_out_ex : STD_LOGIC;
+    signal alu_out_ex : signed (31 downto 0);
+    signal br_flag_out_ex : std_logic;
 
-    SIGNAL wb_addr_out_ex : signed (4 DOWNTO 0);
+    signal wb_addr_out_ex : signed (4 downto 0);
 
-BEGIN
+begin
 
     instrMemI : rom
-    GENERIC MAP(
+    generic map(
         addrWd => 16,
         dataWd => 32,
         fileId => "instMem.dat"
     )
-    PORT MAP(
+    port map(
         addr => iAddr,
         data => iData,
         fileIO => iFileIO
     );
 
     fetching : fetch
-    PORT MAP(
+    port map(
         clk => clk,
         pc => pc_fetch,
         pc_out => pc_dec
     );
 
     decoding : decode
-    PORT MAP(
+    port map(
         clk => clk,
-        instr => instr,
+        instr => signed(iData),
         opC => opC,
         r1_out => r1_out,
         r2_out => r2_out,
@@ -166,43 +165,43 @@ BEGIN
         pc_out => pc_out_dec
     );
 
-    executeI : execute PORT MAP(clk, opC, opC_ex_out, r1_out, r2_out, imm, r1_out_ex, r2_out_ex, imm_out_ex, long_imm, long_imm_out_ex, r3_out, r4_out, r5_out, a, b, a_out_ex, b_out_ex, pc_out_dec, pc_out_ex, br_flag_out_ex);
+    executeI : execute port map(clk, opC, opC_ex_out, r1_out, r2_out, imm, r1_out_ex, r2_out_ex, imm_out_ex, long_imm, long_imm_out_ex, r3_out, r4_out, r5_out, a, b, a_out_ex, b_out_ex, pc_out_dec, pc_out_ex, br_flag_out_ex);
     -- Connect fetch and decode PCs and instr signals
-    PROCESS (clk)
-        VARIABLE all_x : BOOLEAN := true;
-    BEGIN
-        IF falling_edge(clk) THEN
+    process (clk)
+        variable all_x : boolean := true;
+    begin
+        if falling_edge(clk) then
 
             all_x := true;
-            FOR i IN pc_out_dec'RANGE LOOP
-                IF pc_out_dec(i) = 'X' THEN
+            for i in pc_out_dec'range loop
+                if pc_out_dec(i) = 'X' then
                     all_x := false;
 
-                END IF;
-            END LOOP;
+                end if;
+            end loop;
 
-            IF NOT all_x THEN
-                pc_fetch <= (OTHERS => '0');
-            ELSE
+            if not all_x then
+                pc_fetch <= (others => '0');
+            else
                 pc_fetch <= pc_out_dec;
-            END IF;
+            end if;
             instr <= signed(iData);
-        END IF;
-    END PROCESS;
+        end if;
+    end process;
 
-    PROCESS IS
-    BEGIN
-        iFileIO <= load, none AFTER 5 ns;
+    process is
+    begin
+        iFileIO <= load, none after 5 ns;
 
-        FOR j IN 1 TO 25 LOOP
+        for j in 1 to 25 loop
             clk <= '0';
-            WAIT FOR 5 ns;
+            wait for 5 ns;
             clk <= '1';
-            WAIT FOR 5 ns;
+            wait for 5 ns;
 
-            iAddr <= STD_LOGIC_VECTOR(to_unsigned(0, iAddr'length - pc_dec'length)) & STD_LOGIC_VECTOR(pc_dec);
-        END LOOP;
-        WAIT;
-    END PROCESS;
+            iAddr <= std_logic_vector(to_unsigned(0, iAddr'length - pc_dec'length)) & std_logic_vector(pc_dec);
+        end loop;
+        wait;
+    end process;
 
-END ARCHITECTURE processorTestArch;
+end architecture processorTestArch;

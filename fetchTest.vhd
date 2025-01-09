@@ -56,7 +56,7 @@ begin
             clk <= '1';
             wait for 5 ns;
             pc <= pc_out;
-            iAddr <= std_logic_vector(to_unsigned(0, iAddr'length - pc_out'length)) & std_logic_vector(pc_out);
+            iAddr <= std_logic_vector(pc_out);
 
         end loop;
         wait;

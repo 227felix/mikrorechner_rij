@@ -1,6 +1,7 @@
 [libraries]
 
 lib.files = [
+"write_backTest.vhd",
 "write_back.vhd",
 "processorTest.vhd",
 "processor.vhd",

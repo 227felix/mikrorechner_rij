@@ -1,136 +1,135 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
-USE ieee.numeric_std.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
-USE work.mydefinitions.ALL;
+use work.mydefinitions.all;
 
-ENTITY alu IS
-	PORT (
-		a : IN signed (31 DOWNTO 0);
-		b : IN signed (31 DOWNTO 0);
-		imm : IN signed (15 DOWNTO 0);
-		opC : IN INTEGER RANGE 0 TO 63;
-		alu_out : OUT signed (31 DOWNTO 0);
-		br_flag : OUT STD_LOGIC
+entity alu is
+	port (
+		a : in signed (31 downto 0);
+		b : in signed (31 downto 0);
+		imm : in signed (15 downto 0);
+		opC : in integer range 0 to 63;
+		alu_out : out signed (31 downto 0);
+		br_flag : out std_logic
 	);
-END ENTITY alu;
+end entity alu;
 
-ARCHITECTURE alu_architecture OF alu IS
-	SIGNAL product : signed(63 DOWNTO 0);
-BEGIN
-	PROCESS (a, b, imm, opC) IS
-	BEGIN
-		alu_out <= (OTHERS => '-');
+architecture alu_architecture of alu is
+	signal product : signed(63 downto 0);
+begin
+	process (a, b, imm, opC) is
+	begin
+		alu_out <= (others => '-');
 		br_flag <= '-';
-		CASE opC IS
-			WHEN add =>
+		case opC is
+			when add =>
 				alu_out <= a + b;
-			WHEN subt =>
+			when subt =>
 				alu_out <= a - b;
-			WHEN neg =>
+			when neg =>
 				alu_out <= 0 - a;
-			WHEN mul =>
+			when mul =>
 				product <= a * b;
-				alu_out <= product(31 DOWNTO 0);
-			WHEN div =>
+				alu_out <= product(31 downto 0);
+			when div =>
 				alu_out <= a / b;
-			WHEN modu =>
-				alu_out <= a MOD b;
-			WHEN nicht =>
-				alu_out <= NOT a;
-			WHEN und =>
-				alu_out <= a AND b;
-			WHEN oder =>
-				alu_out <= a OR b;
-			WHEN beq =>
-				IF a = b THEN
+			when modu =>
+				alu_out <= a mod b;
+			when nicht =>
+				alu_out <= not a;
+			when und =>
+				alu_out <= a and b;
+			when oder =>
+				alu_out <= a or b;
+			when beq =>
+				if a = b then
 					br_flag <= '1';
-				ELSE
+				else
 					br_flag <= '0';
-				END IF;
-			WHEN bneq =>
-				IF a = b THEN
+				end if;
+			when bneq =>
+				if a = b then
 					br_flag <= '0';
-				ELSE
+				else
 					br_flag <= '1';
-				END IF;
-			WHEN blt =>
-				IF a < b THEN
+				end if;
+			when blt =>
+				if a < b then
 					br_flag <= '1';
-				ELSE
+				else
 					br_flag <= '0';
-				END IF;
-			WHEN OTHERS =>
-				NULL;
+				end if;
+			when others =>
+				null;
 
-		END CASE;
+		end case;
 
-	END PROCESS;
+	end process;
 
-END ARCHITECTURE;
+end architecture;
 
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
-USE ieee.numeric_std.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
-USE work.mydefinitions.ALL;
+use work.mydefinitions.all;
 
-ENTITY execute IS
-	PORT (
-		clk : IN STD_LOGIC;
+entity execute is
+	port (
+		clk : in std_logic;
 
-		opC : IN INTEGER RANGE 0 TO 63;
-		opC_out : OUT INTEGER RANGE 0 TO 63;
+		opC : in integer range 0 to 63;
+		opC_out : out integer range 0 to 63;
 
-		r1 : IN signed (4 DOWNTO 0);
-		r2 : IN signed (4 DOWNTO 0);
-		imm : IN signed (15 DOWNTO 0);
-		r1_out : OUT signed (4 DOWNTO 0);
-		r2_out : OUT signed (4 DOWNTO 0);
-		imm_out : OUT signed (15 DOWNTO 0);
+		r1 : in signed (4 downto 0);
+		r2 : in signed (4 downto 0);
+		imm : in signed (15 downto 0);
+		r1_out : out signed (4 downto 0);
+		r2_out : out signed (4 downto 0);
+		imm_out : out signed (15 downto 0);
 
-		long_imm : IN signed (25 DOWNTO 0);
-		long_imm_out : OUT signed (25 DOWNTO 0);
+		long_imm : in signed (25 downto 0);
+		long_imm_out : out signed (25 downto 0);
 
-		r3 : IN signed (4 DOWNTO 0);
-		r4 : IN signed (4 DOWNTO 0);
-		r5 : IN signed (4 DOWNTO 0);
+		r3 : in signed (4 downto 0);
+		r4 : in signed (4 downto 0);
+		r5 : in signed (4 downto 0);
 
-		a : IN signed (31 DOWNTO 0);
-		b : IN signed (31 DOWNTO 0);
+		a : in signed (31 downto 0);
+		b : in signed (31 downto 0);
 
-		a_out : OUT signed (31 DOWNTO 0);
-		b_out : OUT signed (31 DOWNTO 0);
+		a_out : out signed (31 downto 0);
+		b_out : out signed (31 downto 0);
 
-		pc : IN signed (15 DOWNTO 0);
-		pc_out : OUT signed (15 DOWNTO 0);
+		pc : in signed (15 downto 0);
+		pc_out : out signed (15 downto 0);
 
-		br_flag_out : OUT STD_LOGIC
-
+		br_flag_out : out std_logic
 
 	);
-END ENTITY execute;
+end entity execute;
 
-ARCHITECTURE execute_architecture OF execute IS
+architecture execute_architecture of execute is
 
-	COMPONENT alu IS
-		PORT (
-			a : IN signed (31 DOWNTO 0);
-			b : IN signed (31 DOWNTO 0);
-			imm : IN signed (15 DOWNTO 0);
-			opC : IN INTEGER RANGE 0 TO 63;
-			alu_out : OUT signed (31 DOWNTO 0);
-			br_flag : OUT STD_LOGIC
+	component alu is
+		port (
+			a : in signed (31 downto 0);
+			b : in signed (31 downto 0);
+			imm : in signed (15 downto 0);
+			opC : in integer range 0 to 63;
+			alu_out : out signed (31 downto 0);
+			br_flag : out std_logic
 		);
-	END COMPONENT alu;
+	end component alu;
 
-	SIGNAL alu_signal : signed(31 DOWNTO 0);
-	SIGNAL br_signal : STD_LOGIC;
-BEGIN
+	signal alu_signal : signed(31 downto 0);
+	signal br_signal : std_logic;
+begin
 
-	assign : PROCESS (clk) IS
-	BEGIN
-		IF rising_edge(clk) THEN
+	assign : process (clk) is
+	begin
+		if rising_edge(clk) then
 			opC_out <= opC;
 
 			r1_out <= r1;
@@ -144,16 +143,16 @@ BEGIN
 			pc_out <= pc;
 
 			br_flag_out <= br_signal;
-		IF opC = add OR opC = subt OR opC = neg OR opC = mul OR opC = div OR opC = modu OR opC = nicht OR opC = und OR opC = oder THEN
-			b_out <= alu_signal;
-		ELSE
-			b_out <= b;
-		end if;
+			if opC < 6 then
+				b_out <= alu_signal;
+			else
+				b_out <= b;
+			end if;
 
-		END IF;
-	END PROCESS assign;
+		end if;
+	end process assign;
 	ALUI : alu
-	PORT MAP(
+	port map(
 		a => a,
 		b => b,
 		imm => imm,
@@ -162,4 +161,4 @@ BEGIN
 		br_flag => br_signal
 	);
 
-END ARCHITECTURE execute_architecture;
+end architecture execute_architecture;

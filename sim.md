@@ -20,7 +20,7 @@ ghdl -r --std=08 --workdir=build -fsynopsys decodeTest --vcd=build/decode.vcd
 gtkwave build/decode.vcd
 
 
-## Reagbank sichtbar
+## Regbank sichtbar
 
 ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys decode.vhd
@@ -59,15 +59,48 @@ gtkwave build/processor.vcd
 
 
 
-
-ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+# Memory Acc
 ghdl -a --std=08 --workdir=build -fsynopsys memorySim/memPkg.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys memorySim/ramIO.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys memory_acc.vhd
 ghdl -a --std=08 --workdir=build -fsynopsys memory_accTest.vhd
 ghdl -e --std=08 --workdir=build -fsynopsys memory_accTest
-ghdl -r --std=08 --workdir=build -fsynopsys memory_accTest --vcd=build/memory_acc.vcd
-gtkwave build/memory_acc.vcd
+ghdl -r --std=08 --workdir=build -fsynopsys memory_accTest --wave=build/mem_acc.ghw
+gtkwave build/mem_acc.ghw
+
+
+# Write Back
+ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys write_back.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys write_backTest.vhd
+ghdl -e --std=08 --workdir=build -fsynopsys write_backTest
+ghdl -r --std=08 --workdir=build -fsynopsys write_backTest --vcd=build/write_back.vcd
+gtkwave build/write_back.vcd
+
+# Processor
+ghdl -a --std=08 --workdir=build -fsynopsys mydefinitions.vhd
+
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/memPkg.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/rom.vhd
+ghdl -a --std=08 --workdir=build -fsynopsys memorySim/ramIO.vhd
+
+ghdl -a --std=08 --workdir=build -fsynopsys fetch.vhd
+
+ghdl -a --std=08 --workdir=build -fsynopsys decode.vhd
+
+ghdl -a --std=08 --workdir=build -fsynopsys execute.vhd
+
+ghdl -a --std=08 --workdir=build -fsynopsys memory_acc.vhd
+
+ghdl -a --std=08 --workdir=build -fsynopsys write_back.vhd
+
+ghdl -a --std=08 --workdir=build -fsynopsys processor.vhd
+ghdl -e --std=08 --workdir=build -fsynopsys processor
+ghdl -r --std=08 --workdir=build -fsynopsys processor --vcd=build/processor.vcd
+gtkwave build/processor.vcd
+
+
+
 
 
 // fetch decode

@@ -1,25 +1,25 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
-USE ieee.numeric_std.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
-USE work.mydefinitions.ALL;
+use work.mydefinitions.all;
 
-ENTITY fetch IS
-	PORT (
-		clk : IN STD_LOGIC;
-		pc : IN signed (15 DOWNTO 0);
-		pc_out : OUT signed (15 DOWNTO 0)
+entity fetch is
+	port (
+		clk : in std_logic;
+		pc : in signed (15 downto 0);
+		pc_out : out signed (15 downto 0)
 	);
-END ENTITY fetch;
+end entity fetch;
 
-ARCHITECTURE fetch_arch OF fetch IS
-BEGIN
+architecture fetch_arch of fetch is
+begin
 
-	fetching : PROCESS (clk) IS
-	BEGIN
-		IF rising_edge(clk) THEN
-			pc_out <= pc;
+	fetching : process (clk) is
+	begin
+		if rising_edge(clk) then
+			pc_out <= pc + 1;
 			-- pc_out <= pc + 1;
-		END IF;
-	END PROCESS fetching;
-END ARCHITECTURE fetch_arch;
+		end if;
+	end process fetching;
+end architecture fetch_arch;

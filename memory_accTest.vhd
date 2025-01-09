@@ -24,29 +24,29 @@ architecture memory_accTestArch of memory_accTest is
             addr : in signed(15 downto 0);
             nwe : out std_logic;
             data_out : out signed(31 downto 0);
-            pc : in signed(31 downto 0);
-            pc_out : out signed(31 downto 0);
+            pc : in signed(15 downto 0);
+            pc_out : out signed(15 downto 0);
             br_flag : in std_logic
         );
     end component memory_acc;
 
-    signal clk : std_logic;
-    signal opC : integer range 0 to 63;
-    signal opC_out : integer range 0 to 63;
-    signal r1 : signed(4 downto 0);
-    signal imm : signed(15 downto 0);
-    signal r1_out : signed(4 downto 0);
-    signal imm_out : signed(15 downto 0);
-    signal long_imm : signed(25 downto 0);
-    signal data : signed(31 downto 0);
-    signal addr : signed(15 downto 0);
-    signal nwe : std_logic;
-    signal data_out : signed(31 downto 0);
-    signal pc : signed(31 downto 0);
-    signal pc_out : signed(31 downto 0);
-    signal br_flag : std_logic;
+    signal clk : std_logic := '0';
+    signal opC : integer range 0 to 63 := 0;
+    signal opC_out : integer range 0 to 63 := 0;
+    signal r1 : signed(4 downto 0) := (others => '0');
+    signal imm : signed(15 downto 0) := to_signed(3, 16);
+    signal r1_out : signed(4 downto 0) := (others => '0');
+    signal imm_out : signed(15 downto 0) := (others => '0');
+    signal long_imm : signed(25 downto 0) := (others => '0');
+    signal data : signed(31 downto 0) := (others => '0');
+    signal addr : signed(15 downto 0) := (others => '0');
+    signal nwe : std_logic := '0';
+    signal data_out : signed(31 downto 0) := (others => '0');
+    signal pc : signed(15 downto 0) := (others => '0');
+    signal pc_out : signed(15 downto 0) := (others => '0');
+    signal br_flag : std_logic := '0';
 
-    signal ram_data_out : std_logic_vector(31 downto 0);
+    signal ram_data_out : std_logic_vector(31 downto 0) := (others => '0');
     signal iFileIO : fileIoT := none;
 
 begin
@@ -76,7 +76,7 @@ begin
         imm_out => imm_out,
         long_imm => long_imm,
         data => data,
-        addr => addr,
+        addr => addr, -- kann die addresse gleichzeitig mit dem opc übertragen werden?
         nwe => nwe,
         data_out => data_out,
         pc => pc,
@@ -84,10 +84,12 @@ begin
         br_flag => br_flag
     );
 
-
-    addr <= to_signed(0, 16), to_signed(1, 16) after 20 ns;
-    data <= to_signed(100, 32), to_signed(200, 32) after 10 ns;
-    nwe <= '0', '1' after 10 ns; -- not working 
+    process (clk)
+    begin
+        if falling_edge(clk) then
+            data_out <= signed(ram_data_out);
+        end if;
+    end process;
 
     process is
     begin
@@ -96,11 +98,31 @@ begin
             clk <= '0';
             wait for 5 ns;
             clk <= '1';
-            data_out <= signed(ram_data_out);
             wait for 5 ns;
         end loop;
         wait;
     end process;
 
+    -- process that drives the opc
+    process is
+    begin
+        wait for 5 ns;
+        opC <= 11;
+        addr <= to_signed(0, 16);
+        data <= to_signed(100, 32);
+        wait for 10 ns;
+        addr <= to_signed(1, 16);
+        wait for 10 ns;
+        data <= to_signed(10, 32);
+        opC <= 10;
+        wait for 10 ns;
+        addr <= to_signed(0, 16);
+        wait for 10 ns;
+        addr <= to_signed(1, 16);
+        wait for 10 ns;
+        addr <= to_signed(2, 16);
+
+        wait;
+    end process;
 
 end architecture memory_accTestArch;
